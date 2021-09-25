@@ -9,6 +9,7 @@ public class Cliente {
 	private Direccion direccion;
 	private String mail;
 	private String celular;
+	private boolean estado;
 	
 	public Cliente() {}
 
@@ -63,5 +64,8 @@ public class Cliente {
 	public void setCelular(String celular) {
 		this.celular = celular;
 	}
-	
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
 }

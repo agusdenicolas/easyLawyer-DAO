@@ -15,7 +15,8 @@ public class Tramite {
 	private double sellados;
 	private double precioTotal; 
 	private double montoPagado;
-	private String estado;	//TODO: pasar a ENUM -> Estado
+	private String estadoActual;	//TODO: pasar a ENUM -> Estado
+	private boolean estado;
 	
 	public Tramite() {}
 	
@@ -103,11 +104,17 @@ public class Tramite {
 		this.montoPagado = montoPagado;
 	}
 
-	public String getEstado() {
-		return estado;
+	public String getEstadoActual() {
+		return estadoActual;
 	}
 
-	public void setEstado(String estado) {
+	public void setEstado(String estadoActual) {
+		this.estadoActual = estadoActual;
+	}
+
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
+	
+	
 }

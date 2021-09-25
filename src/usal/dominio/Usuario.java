@@ -12,6 +12,7 @@ public abstract class Usuario {  //TODO: hacer clase abstracta y crear clases hi
 	private String mail;
 	private String dni;
 	private TipoUsuario tipoUsuario;
+	private boolean estado;
 	
 	public Usuario(TipoUsuario tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
@@ -75,6 +76,10 @@ public abstract class Usuario {  //TODO: hacer clase abstracta y crear clases hi
 
 	public void setTipoUsuario(TipoUsuario tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
+	}
+	
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	
 }

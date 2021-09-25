@@ -10,7 +10,8 @@ public class Venta {
 	private Tramite tramite;
 	private Date fecha;
 	private double monto;
-
+	private boolean estado;
+	
 	public Venta() {}
 
 	public int getIdVenta() {
@@ -57,4 +58,7 @@ public class Venta {
 		this.monto = monto;
 	}
 	
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
 }

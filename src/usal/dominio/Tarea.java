@@ -12,6 +12,7 @@ public class Tarea {
 	private Date fechaFin;
 	private int prioridad;
 	private String anotacion;
+	private boolean estado;
 	
 	public Tarea() {}
 	
@@ -73,5 +74,9 @@ public class Tarea {
 
 	public void setAnotacion(String anotacion) {
 		this.anotacion = anotacion;
+	}
+	
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 }

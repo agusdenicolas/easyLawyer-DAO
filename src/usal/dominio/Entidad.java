@@ -5,7 +5,8 @@ public class Entidad {
 	private int idEntidad;
 	private Direccion direccion;
 	private String nombre;
-
+	private boolean estado;
+	
 	public Entidad() {}
 
 	public int getIdEntidad() {
@@ -26,6 +27,10 @@ public class Entidad {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+	
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	
 }

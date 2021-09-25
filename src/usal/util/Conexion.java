@@ -21,7 +21,10 @@ public class Conexion {
 			String USER = prop.getProperty("bd_user");
 			String PASSWORD = prop.getProperty("bd_password");
 			
-//			Class.forName(prop.getProperty("jdbc_diver"));
+		/*
+		 *	DEPRECADO 
+		 *	Class.forName(prop.getProperty("jdbc_diver"));
+		*/
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 			
 		}catch (Exception e) {
