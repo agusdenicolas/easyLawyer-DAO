@@ -10,6 +10,17 @@ public class Direccion {
 	private int numero;
 	
 	public Direccion() {}
+	
+	public Direccion(Provincia provincia, String calle, int numero) {
+		super();
+		this.provincia = provincia;
+		this.calle = calle;
+		this.numero = numero;
+	}
+	//TODO: BORRAR ESTE SETER DE ID
+	public void setIdDireccion(int idDireccion) {
+		this.idDireccion = idDireccion;
+	}
 
 	public int getIdDireccion() {
 		return idDireccion;

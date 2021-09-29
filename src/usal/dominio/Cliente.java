@@ -9,9 +9,26 @@ public class Cliente {
 	private Direccion direccion;
 	private String mail;
 	private String celular;
-	private boolean estado;
+	private int estado;
 	
 	public Cliente() {}
+	
+	
+
+	public Cliente(String nombre, String apellido, String cuit, Direccion direccion, String mail, String celular, int estado) {
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.cuit = cuit;
+		this.direccion = direccion;
+		this.mail = mail;
+		this.celular = celular;
+		this.estado = estado;
+	}
+	
+	//TODO: Borrar este Seter de id
+	public void setIdCliente(int idCliente) {
+		this.idCliente = idCliente;
+	}
 
 	public int getIdCliente() {
 		return idCliente;
@@ -65,7 +82,11 @@ public class Cliente {
 		this.celular = celular;
 	}
 
-	public void setEstado(boolean estado) {
+	public int getEstado() {
+		return estado;
+	}
+	
+	public void setEstado(int estado) {
 		this.estado = estado;
 	}
 }
