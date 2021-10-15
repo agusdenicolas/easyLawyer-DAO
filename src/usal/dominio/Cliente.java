@@ -12,20 +12,17 @@ public class Cliente {
 	private int estado;
 	
 	public Cliente() {}
-	
-	
 
-	public Cliente(String nombre, String apellido, String cuit, Direccion direccion, String mail, String celular, int estado) {
+	public Cliente(String nombre, String apellido, String cuit, Direccion direccion, String mail, String celular) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.cuit = cuit;
 		this.direccion = direccion;
 		this.mail = mail;
 		this.celular = celular;
-		this.estado = estado;
+		this.estado = 1;
 	}
 	
-	//TODO: Borrar este Seter de id
 	public void setIdCliente(int idCliente) {
 		this.idCliente = idCliente;
 	}
@@ -89,4 +86,10 @@ public class Cliente {
 	public void setEstado(int estado) {
 		this.estado = estado;
 	}
+
+	@Override
+	public String toString() {
+		return "Cliente [idCliente=" + idCliente + ", nombre=" + nombre + ", apellido=" + apellido + ", cuit=" + cuit
+				+ ", direccion=" + direccion + ", mail=" + mail + ", celular=" + celular + ", estado=" + estado + "]";
+	}	
 }

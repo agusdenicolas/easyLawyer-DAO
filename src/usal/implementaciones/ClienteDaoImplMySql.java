@@ -9,27 +9,23 @@ import java.util.List;
 
 import usal.dominio.Cliente;
 import usal.dominio.Direccion;
+import usal.dominio.enums.Provincia;
 import usal.interfaces.ICrudDao;
 import usal.util.Conexion;
 import usal.util.DAOExcepcion;
 
 public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 	
-	private List<Cliente> clientes;
-
 //  --------------- Consultas Base de Datos ---------------
-	private final String INSERT = "INSERT INTO clientes (fk_idDireccion, nombre, apellido, mail, celular, cuit, estado) "
+	private final String INSERT = "INSERT INTO clientes (nombre, apellido, direccion, mail, celular, cuit, estado) "
 									+ "VALUES (?,?,?,?,?,?,?)";
-	private final String MODIFY = "UPDATE clientes SET fk_idDireccion = ?, nombre = ?, apellido = ?, mail = ?, celular = ?,"
+	private final String MODIFY = "UPDATE clientes SET nombre = ?, apellido = ?, direccion = ?, mail = ?, celular = ?,"
 									+ "cuit = ?, estado = ? WHERE idCliente = ?";
 	private final String DELETE = "UPDATE clientes SET estado = 0 WHERE idCliente = ?";
 	private final String GETONE = "SELECT * FROM clientes WHERE idCliente = ?";
 	private final String GETALL = "SELECT * FROM clientes";
-	
-	//Constructor
-	public ClienteDaoImplMySql() {
-		this.clientes = new ArrayList<Cliente>();
-	}
+
+	public ClienteDaoImplMySql() {}
 		
 	@Override
 	public void insertar(Cliente o) throws DAOExcepcion{
@@ -40,9 +36,10 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 			conn = Conexion.conectar();
 			ps = conn.prepareStatement(INSERT);
 			
-			ps.setInt(1, o.getDireccion().getIdDireccion());
-			ps.setString(2, o.getNombre());
-			ps.setString(3, o.getApellido());
+			ps.setString(1, o.getNombre());
+			ps.setString(2, o.getApellido());
+			//Direccion -> Calle Numero, Provincia
+			ps.setString(3, o.getDireccion().getCalle() + " " + o.getDireccion().getNumero() + ", " + o.getDireccion().getProvincia().getNombreProvincia());
 			ps.setString(4, o.getMail());
 			ps.setString(5, o.getCelular());
 			ps.setString(6, o.getCuit());
@@ -78,9 +75,10 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 			conn = Conexion.conectar();
 			ps = conn.prepareStatement(MODIFY);
 			
-			ps.setInt(1, o.getDireccion().getIdDireccion());
-			ps.setString(2, o.getNombre());
-			ps.setString(3, o.getApellido());
+			ps.setString(1, o.getNombre());
+			ps.setString(2, o.getApellido());
+			//Direccion -> Calle Numero, Provincia
+			ps.setString(3, o.getDireccion().getCalle() + " " + o.getDireccion().getNumero() + ", " + o.getDireccion().getProvincia().getNombreProvincia());
 			ps.setString(4, o.getMail());
 			ps.setString(5, o.getCelular());
 			ps.setString(6, o.getCuit());
@@ -160,7 +158,7 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 				cliente = convertir(rs);
 			}
 		} catch (SQLException SQL) {
-			throw new DAOExcepcion("Error en MYSQL - GETONE - Camion", SQL.getCause());
+			throw new DAOExcepcion("Error en MYSQL - GETONE - Cliente", SQL.getCause());
 		}finally {
 			Conexion.desconectar(conn);
 			
@@ -185,49 +183,65 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 	}
 
 	@Override
-	public List<Cliente> getTodos() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Cliente> getTodos() throws DAOExcepcion{
+		List<Cliente> clientes = new ArrayList<Cliente>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = Conexion.conectar();
+			
+			ps = conn.prepareStatement(GETALL);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				//Hago del mapeo de Rs a Camion y los agrego a la lista
+				clientes.add(convertir(rs));
+			}
+			
+		}catch(SQLException SQL) {
+			throw new DAOExcepcion("Error en MYSQL - GETALL - Cliente", SQL.getCause());
+		}finally {
+			Conexion.desconectar(conn);
+			
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+		
+		return clientes;
 	}
 	
-	//Para mappear 
+		//Para mappear los clientes
 		public Cliente convertir(ResultSet rs) throws SQLException {
+			
+			int idCliente = rs.getInt("idCliente");
 			String nombre = rs.getString("nombre");
 			String apellido = rs.getString("apellido");
 			String cuit = rs.getString("cuit");
-			String fk_idDireccion = rs.getString("fk_idDireccion");
-			String mail = rs.getString("nroChasis");
+			String mail = rs.getString("mail");
 			String celular = rs.getString("celular");
 			int estado = rs.getInt("estado");
 			
-			Cliente c = new Cliente(nombre, apellido, cuit, new Direccion(), mail, celular, estado);
-			c.setIdCliente(rs.getInt("idCliente"));
+			String direccion = rs.getString("direccion");
+			
+			Cliente c = new Cliente(nombre, apellido, cuit, Direccion.convertirDireccion(direccion), mail, celular);
+			c.setIdCliente(idCliente);
+			c.setEstado(estado);
 			
 			return c;
-		}
-
-	public static void main(String[] args) throws DAOExcepcion {
-//		Prueba MODIFY DAO
-//		Direccion d =new Direccion();
-//		d.setIdDireccion(1);
-//		Cliente c = new Cliente("TEST-2", "test-2", "9999999", d, "test2@test2.com", "1122334455", 0);
-//		c.setIdCliente(2);
-		ICrudDao<Cliente> dao = new ClienteDaoImplMySql();
-//		
-//		dao.modificar(c);
-		
-//		Cliente c = new Cliente();
-//		c.setIdCliente(1);
-//		
-//		dao.eliminar(c);
-		
-		Cliente c = dao.getUno(1);
-		
-		
-		
-		System.out.println("EJECUCION FINALIZADA");
-		System.out.println(c);
-		
-	}
-	
+		}	
 }

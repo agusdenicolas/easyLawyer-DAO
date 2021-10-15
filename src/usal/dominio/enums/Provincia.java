@@ -42,4 +42,14 @@ public enum Provincia {
 	public String getNombreProvincia() {
 		return nombreProvincia;
 	}
+	
+	//Busca segun nombre de provincia y si coincide devuelve el Enum; Metodo strip() saca espacios en blanco del principio y final 
+	public static Provincia getProvincia(String p) {
+		for (Provincia x: Provincia.values()) {
+			if(x.getNombreProvincia().equalsIgnoreCase(p.strip())) { 
+				return x;
+			}
+		}
+		return null;
+	}
 }

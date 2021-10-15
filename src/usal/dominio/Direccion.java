@@ -4,28 +4,35 @@ import usal.dominio.enums.Provincia;
 
 public class Direccion {
 	
-	private int idDireccion;
 	private Provincia provincia;
 	private String calle;
-	private int numero;
+	private String numero;
 	
 	public Direccion() {}
 	
-	public Direccion(Provincia provincia, String calle, int numero) {
-		super();
+	public Direccion(Provincia provincia, String calle, String numero) {
 		this.provincia = provincia;
 		this.calle = calle;
 		this.numero = numero;
 	}
-	//TODO: BORRAR ESTE SETER DE ID
-	public void setIdDireccion(int idDireccion) {
-		this.idDireccion = idDireccion;
+	
+	public static Direccion convertirDireccion(String d) {
+		Direccion direccion = new Direccion();
+		
+		if (d != null) {	
+			String [] aux = d.split(",[\s]");
+			
+			//Calculo el ultimo " " para poder separar el nombre de la calle con el numero
+			int i = aux[0].lastIndexOf(" ");
+			
+			direccion.setCalle(aux[0].substring(0, i).trim());
+			direccion.setNumero(aux[0].substring(i, aux[0].length()).trim());
+			direccion.setProvincia(Provincia.getProvincia(aux[1]));
+		}
+		
+		return direccion;
 	}
-
-	public int getIdDireccion() {
-		return idDireccion;
-	}
-
+	
 	public Provincia getProvincia() {
 		return provincia;
 	}
@@ -42,11 +49,18 @@ public class Direccion {
 		this.calle = calle;
 	}
 
-	public int getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 
-	public void setNumero(int numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
+
+	@Override
+	public String toString() {
+		return calle + " " + numero + ", " + provincia.getNombreProvincia();
+	}
+	
+	
 }
