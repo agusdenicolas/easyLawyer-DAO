@@ -11,7 +11,9 @@ public class Cliente {
 	private String celular;
 	private int estado;
 	
-	public Cliente() {}
+	public Cliente() {
+		this.estado = 1;
+	}
 
 	public Cliente(String nombre, String apellido, String cuit, Direccion direccion, String mail, String celular) {
 		this.nombre = nombre;

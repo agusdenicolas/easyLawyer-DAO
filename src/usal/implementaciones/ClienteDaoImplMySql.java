@@ -10,11 +10,13 @@ import java.util.List;
 import usal.dominio.Cliente;
 import usal.dominio.Direccion;
 import usal.dominio.enums.Provincia;
+import usal.factory.DAOFactory;
+import usal.interfaces.IClienteDao;
 import usal.interfaces.ICrudDao;
 import usal.util.Conexion;
 import usal.util.DAOExcepcion;
 
-public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
+public class ClienteDaoImplMySql implements IClienteDao{
 	
 //  --------------- Consultas Base de Datos ---------------
 	private final String INSERT = "INSERT INTO clientes (nombre, apellido, direccion, mail, celular, cuit, estado) "
@@ -24,6 +26,7 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 	private final String DELETE = "UPDATE clientes SET estado = 0 WHERE idCliente = ?";
 	private final String GETONE = "SELECT * FROM clientes WHERE idCliente = ?";
 	private final String GETALL = "SELECT * FROM clientes";
+	private final String GETALLACTIVE = "SELECT * FROM clientes WHERE estado = 1";
 
 	public ClienteDaoImplMySql() {}
 		
@@ -221,27 +224,68 @@ public class ClienteDaoImplMySql implements ICrudDao<Cliente>{
 				}
 			}
 		}
-		
 		return clientes;
 	}
 	
-		//Para mappear los clientes
-		public Cliente convertir(ResultSet rs) throws SQLException {
+	@Override
+	public List<Cliente> getTodosActivos() throws DAOExcepcion{
+		List<Cliente> clientes = new ArrayList<Cliente>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = Conexion.conectar();
 			
-			int idCliente = rs.getInt("idCliente");
-			String nombre = rs.getString("nombre");
-			String apellido = rs.getString("apellido");
-			String cuit = rs.getString("cuit");
-			String mail = rs.getString("mail");
-			String celular = rs.getString("celular");
-			int estado = rs.getInt("estado");
+			ps = conn.prepareStatement(GETALLACTIVE);
+			rs = ps.executeQuery();
 			
-			String direccion = rs.getString("direccion");
+			while (rs.next()) {
+				//Hago del mapeo de Rs a Camion y los agrego a la lista
+				clientes.add(convertir(rs));
+			}
 			
-			Cliente c = new Cliente(nombre, apellido, cuit, Direccion.convertirDireccion(direccion), mail, celular);
-			c.setIdCliente(idCliente);
-			c.setEstado(estado);
+		}catch(SQLException SQL) {
+			throw new DAOExcepcion("Error en MYSQL - GETALLACTIVE - Cliente", SQL.getCause());
+		}finally {
+			Conexion.desconectar(conn);
 			
-			return c;
-		}	
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+		return clientes;
+	}
+	
+	//Para mappear los clientes
+	public Cliente convertir(ResultSet rs) throws SQLException {
+		
+		int idCliente = rs.getInt("idCliente");
+		String nombre = rs.getString("nombre");
+		String apellido = rs.getString("apellido");
+		String cuit = rs.getString("cuit");
+		String mail = rs.getString("mail");
+		String celular = rs.getString("celular");
+		int estado = rs.getInt("estado");
+		
+		String direccion = rs.getString("direccion");
+		
+		Cliente c = new Cliente(nombre, apellido, cuit, Direccion.convertirDireccion(direccion), mail, celular);
+		c.setIdCliente(idCliente);
+		c.setEstado(estado);
+		
+		return c;
+	}
 }

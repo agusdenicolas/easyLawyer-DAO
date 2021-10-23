@@ -16,6 +16,14 @@ public class Direccion {
 		this.numero = numero;
 	}
 	
+/*	
+*	Por ej:
+*		@param: Castro Barros 8989, Capital Federal
+*		@Direccion:
+*			-Calle: Castro Barros
+*			-Numero: 8989
+*			-Provincia: Capital Federal
+*/			
 	public static Direccion convertirDireccion(String d) {
 		Direccion direccion = new Direccion();
 		

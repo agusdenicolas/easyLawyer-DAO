@@ -1,5 +1,7 @@
 package usal.dominio.enums;
 
+import usal.factory.DAOFactory;
+
 public enum Provincia {
 	
 	CABA(1, "Capital Federal"),
